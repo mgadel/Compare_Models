@@ -396,34 +396,59 @@ class ModelComparator():
 
     def summary_error(self):
 
-        self.detailed_results["Squared Error (Test)"] = self.detailed_results.apply(lambda x:(np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"]))**2, axis=1)
-        self.detailed_results["Root Mean Squared Error (Test)"] = self.detailed_results.apply(lambda x: root_mean_squared_error(x["y_true"], x["y_pred_best_hyper"]), axis=1)
-        self.detailed_results["Root Std Squared Error (Test)"] = self.detailed_results.apply(lambda x: (np.std(x["Squared Error (Test)"]))**0.5, axis=1)
-        self.detailed_results["Root min Squared Error (Test)"] = self.detailed_results.apply(lambda x: (np.min(x["Squared Error (Test)"])**0.5), axis=1)
-        self.detailed_results["Root Q1 Squared Error (Test)"] = self.detailed_results.apply(lambda x: (np.percentile(x["Squared Error (Test)"], 25)**0.5), axis=1)
-        self.detailed_results["Root Median Squared Error (Test)"] = self.detailed_results.apply(lambda x: (np.percentile(x["Squared Error (Test)"], 50)**0.5), axis=1)
-        self.detailed_results["Root Q3 Squared Error (Test)"] = self.detailed_results.apply(lambda x: (np.percentile(x["Squared Error (Test)"], 75)**0.5), axis=1)
-        self.detailed_results["Root max Squared Error (Test)"] = self.detailed_results.apply(lambda x: (np.max(x["Squared Error (Test)"])**0.5), axis=1)
+        self.detailed_results["Squared Error (Test)"] = self.detailed_results.apply(
+            lambda x: (np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"]))**2, axis=1)
+        self.detailed_results["Root Mean Squared Error (Test)"] = self.detailed_results.apply(
+            lambda x: root_mean_squared_error(x["y_true"], x["y_pred_best_hyper"]), axis=1)
+        self.detailed_results["Root Std Squared Error (Test)"] = self.detailed_results.apply(
+            lambda x: (np.std(x["Squared Error (Test)"]))**0.5, axis=1)
+        self.detailed_results["Root min Squared Error (Test)"] = self.detailed_results.apply(
+            lambda x: (np.min(x["Squared Error (Test)"])**0.5), axis=1)
+        self.detailed_results["Root Q1 Squared Error (Test)"] = self.detailed_results.apply(
+            lambda x: (np.percentile(x["Squared Error (Test)"], 25)**0.5), axis=1)
+        self.detailed_results["Root Median Squared Error (Test)"] = self.detailed_results.apply(
+            lambda x: (np.percentile(x["Squared Error (Test)"], 50)**0.5), axis=1)
+        self.detailed_results["Root Q3 Squared Error (Test)"] = self.detailed_results.apply(
+            lambda x: (np.percentile(x["Squared Error (Test)"], 75)**0.5), axis=1)
+        self.detailed_results["Root max Squared Error (Test)"] = self.detailed_results.apply(
+            lambda x: (np.max(x["Squared Error (Test)"])**0.5), axis=1)
 
-        self.detailed_results["Absolute Error (Test)"] = self.detailed_results.apply(lambda x: abs(np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"])), axis=1)
-        self.detailed_results["Mean Absolute Error (Test)"] = self.detailed_results.apply(lambda x: mean_absolute_error(x["y_true"], x["y_pred_best_hyper"]), axis=1)
-        self.detailed_results["Std Absolute Error (Test)"] = self.detailed_results.apply(lambda x: np.std(x["Absolute Error (Test)"]), axis=1)
-        self.detailed_results["min Absolute Error (Test)"] = self.detailed_results.apply(lambda x: np.min(x["Absolute Error (Test)"]), axis=1)
-        self.detailed_results["Q1 Absolute Error (Test)"] = self.detailed_results.apply(lambda x:  np.percentile(x["Absolute Error (Test)"], 25), axis=1)
-        self.detailed_results["Median Absolute Error (Test)"] = self.detailed_results.apply(lambda x: np.percentile(x["Absolute Error (Test)"], 50), axis=1)
-        self.detailed_results["Q3 Absolute Error (Test)"] = self.detailed_results.apply(lambda x: np.percentile(x["Absolute Error (Test)"], 75), axis=1)
-        self.detailed_results["max Absolute Error (Test)"] = self.detailed_results.apply(lambda x: np.max(x["Absolute Error (Test)"]), axis=1)
+        self.detailed_results["Absolute Error (Test)"] = self.detailed_results.apply(
+            lambda x: abs(np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"])), axis=1)
+        self.detailed_results["Mean Absolute Error (Test)"] = self.detailed_results.apply(
+            lambda x: mean_absolute_error(x["y_true"], x["y_pred_best_hyper"]), axis=1)
+        self.detailed_results["Std Absolute Error (Test)"] = self.detailed_results.apply(
+            lambda x: np.std(x["Absolute Error (Test)"]), axis=1)
+        self.detailed_results["min Absolute Error (Test)"] = self.detailed_results.apply(
+            lambda x: np.min(x["Absolute Error (Test)"]), axis=1)
+        self.detailed_results["Q1 Absolute Error (Test)"] = self.detailed_results.apply(
+            lambda x:  np.percentile(x["Absolute Error (Test)"], 25), axis=1)
+        self.detailed_results["Median Absolute Error (Test)"] = self.detailed_results.apply(
+            lambda x: np.percentile(x["Absolute Error (Test)"], 50), axis=1)
+        self.detailed_results["Q3 Absolute Error (Test)"] = self.detailed_results.apply(
+            lambda x: np.percentile(x["Absolute Error (Test)"], 75), axis=1)
+        self.detailed_results["max Absolute Error (Test)"] = self.detailed_results.apply(
+            lambda x: np.max(x["Absolute Error (Test)"]), axis=1)
 
-        self.detailed_results["Absolute Percentage Error (Test)"] = self.detailed_results.apply(lambda x: (abs(np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"]))) / np.array(x["y_true"])*100, axis=1)
-        self.detailed_results["Mean Absolute Percentage Error (Test)"] = self.detailed_results.apply(lambda x: np.mean(x["Absolute Percentage Error (Test)"]), axis=1)
-        self.detailed_results["Std Absolute Percentage Error (Test)"] = self.detailed_results.apply(lambda x: np.std(x["Absolute Percentage Error (Test)"]), axis=1)
-        self.detailed_results["min Absolute Percentage Error (Test)"] = self.detailed_results.apply(lambda x: np.min(x["Absolute Percentage Error (Test)"]), axis=1)
-        self.detailed_results["Q1 Absolute Percentage Error (Test)"] = self.detailed_results.apply(lambda x:  np.percentile(x["Absolute Percentage Error (Test)"], 25), axis=1)
-        self.detailed_results["Median Absolute Percentage Error (Test)"] = self.detailed_results.apply(lambda x: np.percentile(x["Absolute Percentage Error (Test)"], 50), axis=1)
-        self.detailed_results["Q3 Absolute Percentage Error (Test)"] = self.detailed_results.apply(lambda x: np.percentile(x["Absolute Percentage Error (Test)"], 75), axis=1)
-        self.detailed_results["max Absolute Percentage Error (Test)"] = self.detailed_results.apply(lambda x: np.max(x["Absolute Percentage Error (Test)"]), axis=1)
+        self.detailed_results["Absolute Percentage Error (Test)"] = self.detailed_results.apply(
+            lambda x: (abs(np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"]))) / np.array(x["y_true"])*100, axis=1)
+        self.detailed_results["Mean Absolute Percentage Error (Test)"] = self.detailed_results.apply(
+            lambda x: np.mean(x["Absolute Percentage Error (Test)"]), axis=1)
+        self.detailed_results["Std Absolute Percentage Error (Test)"] = self.detailed_results.apply(
+            lambda x: np.std(x["Absolute Percentage Error (Test)"]), axis=1)
+        self.detailed_results["min Absolute Percentage Error (Test)"] = self.detailed_results.apply(
+            lambda x: np.min(x["Absolute Percentage Error (Test)"]), axis=1)
+        self.detailed_results["Q1 Absolute Percentage Error (Test)"] = self.detailed_results.apply(
+            lambda x:  np.percentile(x["Absolute Percentage Error (Test)"], 25), axis=1)
+        self.detailed_results["Median Absolute Percentage Error (Test)"] = self.detailed_results.apply(
+            lambda x: np.percentile(x["Absolute Percentage Error (Test)"], 50), axis=1)
+        self.detailed_results["Q3 Absolute Percentage Error (Test)"] = self.detailed_results.apply(
+            lambda x: np.percentile(x["Absolute Percentage Error (Test)"], 75), axis=1)
+        self.detailed_results["max Absolute Percentage Error (Test)"] = self.detailed_results.apply(
+            lambda x: np.max(x["Absolute Percentage Error (Test)"]), axis=1)
 
-        self.detailed_results.set_index(['Algo Name', 'Preprocessor Name'], inplace=True, drop=False)
+        self.detailed_results.set_index(['Algo Name', 'Preprocessor Name'],
+                                        inplace=True, drop=False)
 
         return
 
@@ -448,7 +473,8 @@ class ModelComparator():
 
         data_L2 = data_plot.sort_values(by=["Root Mean Squared Error (Test)"], ascending=False)
         data_L1 = data_plot.sort_values(by=["Mean Absolute Error (Test)"], ascending=False)
-        data_3 = data_plot.sort_values(by=["Mean Absolute Percentage Error (Test)"], ascending=False)
+        data_3 = data_plot.sort_values(by=["Mean Absolute Percentage Error (Test)"], 
+                                       ascending=False)
 
         ax2.boxplot(
                 data_L2["Squared Error (Test)"],
@@ -463,7 +489,8 @@ class ModelComparator():
                 vert=False
                 )
         print(data_L1)
-        # ax1.set_xlim([0, data_L1.sort_values(by=["Mean Absolute Error (Test)"])["max Absolute Error (Test)"].iloc[0]])
+        # ax1.set_xlim([0, data_L1.sort_values(by=["Mean Absolute Error (Test)"])
+        # ["max Absolute Error (Test)"].iloc[0]])
         ax1.set_xlim([0, data_L1["Absolute Error (Test)"].apply(max).sort_values()[:2].max()])
 
         ax3.boxplot(
@@ -602,7 +629,7 @@ class ModelComparator():
         # ON AGGREGE LES RESULTATS DE LA CROSS VALIDATION
 
         # on a reconstruit, pour toutes les données, 2 vecteurs: y true et y_pred avec le meilleur set de hyperparameter
-        # possible sur les K-1 fold de l'entraintement. 
+        # possible sur les K-1 fold de l'entraintement.
         # 1) pour chaque métrique, on estime min, max, Q1, Q2, Q3
         # 2) on étudie les résidus
         # on evalue les métriques qui nous intéressent
@@ -618,16 +645,24 @@ class ModelComparator():
         self.detailed_results["y_true"] = self.detailed_results["y_true"].apply(lambda x: flatten(x))
 
         self.summary_error()
-        self.detailed_results.sort_values(by="Root Mean Squared Error (Test)", ascending=True, inplace=True)
+        self.detailed_results.sort_values(
+            by="Root Mean Squared Error (Test)", ascending=True, inplace=True)
 
         print_log("\n ---------- HYPERPARAMETER RESULTS ------------- \n")
         pd.set_option('display.max_columns', None)  # Display the wholde dataframe
-        print_log(self.hyperparam_results.drop(["GridSearch Best Algo", f"GridSearch Test: Mean {self.selection_metrics} Score (selection score) Fold",
-                  f"GridSearch Test: Std {self.selection_metrics} Score Fold", "GridSearch Mean Training Time (s) Fold"], axis=1).round(3))
+        print_log(self.hyperparam_results.drop(
+            ["GridSearch Best Algo",
+             f"GridSearch Test: Mean {self.selection_metrics} Score (selection score) Fold",
+             f"GridSearch Test: Std {self.selection_metrics} Score Fold",
+             "GridSearch Mean Training Time (s) Fold"], axis=1).round(3))
 
         print_log('\n ---------- DETAILED CROSS VALIDATION RESULTS ------- \n')
         pd.set_option('display.max_columns', None)  # Display the wholde dataframe
-        print_log(self.detailed_results.drop(columns=["Algo Name","Preprocessor Name","y_pred_best_hyper", "y_true", "X_true", "Squared Error (Test)","Absolute Error (Test)","Absolute Percentage Error (Test)"], axis=1).round(3))
+        print_log(self.detailed_results.drop(
+            columns=["Algo Name", "Preprocessor Name", "y_pred_best_hyper",
+                     "y_true", "X_true", "Squared Error (Test)", "Absolute Error (Test)",
+                     "Absolute Percentage Error (Test)"], axis=1
+                     ).round(3))
 
         # Ici on a selectionné par Grid Search les meilleurs parametre pour les algos étudiés.
         # on selectionne ensuite le meilleur algo définit par CV
@@ -656,7 +691,11 @@ class ModelComparator():
 
     def return_errorfiles(self):
 
-        self.detailed_results.drop(columns=["Algo Name", "Preprocessor Name", "y_pred_best_hyper", "y_true", "X_true", "Squared Error (Test)","Absolute Error (Test)","Absolute Percentage Error (Test)"], axis=1).round(3).to_csv("results/detailed_results.csv")
+        self.detailed_results.drop(
+            columns=["Algo Name", "Preprocessor Name", "y_pred_best_hyper",
+                     "y_true", "X_true", "Squared Error (Test)", "Absolute Error (Test)",
+                     "Absolute Percentage Error (Test)"], axis=1
+                     ).round(3).to_csv("results/detailed_results.csv")
         self.hyperparam_results.to_csv("results/hyperparam_results.csv")
         self.models_predictions.to_csv("results/models_predictions.csv", index=False)
 
@@ -688,7 +727,8 @@ class ModelComparator():
                                  ).fit(self.X, self.Y)
 
         pd.DataFrame(best_grid.best_params_,
-                     index=['Best Hyperparameters']).to_csv('results/best_model_best_hyperparam.csv')
+                     index=['Best Hyperparameters']
+                     ).to_csv('results/best_model_best_hyperparam.csv')
 
         # to do LEARN BEST ALGO
         with open(f'best_algo/best_algo_{self.best_algo}_{self.best_preproc}_pickle.obj', 'wb') as f:
