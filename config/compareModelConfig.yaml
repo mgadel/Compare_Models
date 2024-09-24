@@ -34,7 +34,7 @@ input_models:
 
 # GLOBAL PREPROCESSING PIPELINE PARAMETERS
 pipeline_preprocessing:
-  preprocesseurs_all_algo : ["simple", "poly","poly and spline"] #["simple"]
+  preprocesseurs_all_algo : ["simple"] #["simple", "poly","poly and spline"] #["simple"]
   poly_deg : 2
   spline_knots : 2
   spline_degree : 2
