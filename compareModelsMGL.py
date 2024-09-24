@@ -195,22 +195,27 @@ class ModelComparator():
             'classifier__max_features': [2, 3],
         }
 
+        params_class_gb = {
+        }
+
         self.dict_algo = {
                 "Logistic Regression": (LogisticRegression(penalty=None, fit_intercept=True), None),
                 "Ridge": (LogisticRegression(penalty="l2", fit_intercept=True), params_class_ridge),
                 "Lasso": (LogisticRegression(penalty="l1", solver="saga", fit_intercept=True),
                           params_class_lasso),
-                "ElsaticNet": (LogisticRegression(penalty="elasticnet", solver="saga", 
+                "ElsaticNet": (LogisticRegression(penalty="elasticnet", solver="saga",
                                fit_intercept=True), params_class_elastic),
                 "Decision Tree": (DecisionTreeClassifier(), params_class_tree),
                 "Random Forest": (RandomForestClassifier(),
-                                  self.config["params_classif"]['params_rf']),
+                                  params_class_rf),
                 "KNN": (KNeighborsClassifier(), self.config["params_classif"]['params_knn']),
                 "GBoosting": (GradientBoostingClassifier(),
-                              self.config["params_classif"]['params_gb'])
+                              params_class_gb)
         }
 
-        self.dict_algo = {key: self.dict_algo[key] for key in self.config["input_models"]['classif']}
+        self.dict_algo = {
+            key: self.dict_algo[key] for key in self.config["input_models"]['classif']
+            }
 
         return None
 
@@ -325,7 +330,8 @@ class ModelComparator():
         print(self.dict_algo)
         return None
 
-    def init_metrics(self, selection_metric_classification='AUC', selection_metric_regression='RMSE'):
+    def init_metrics(self, selection_metric_classification='AUC',
+                     selection_metric_regression='RMSE'):
 
         # on initialise la liste des métriques à partir desquelles réaliser l'étude
 
@@ -355,19 +361,20 @@ class ModelComparator():
     def init_gridsearch_results(self):
 
         # On initialise les entrées du fichier résultat de la recherche des hyperparameters
-        hyperparam_results = {"Algo Name": [],
-                              "Preprocessor Name": [],
-                              f"GridSearch Test: Mean {self.selection_metrics} Score (selection score)": [],
-                              f"GridSearch Test: Std {self.selection_metrics} Score": [],
-                              f"GridSearch Test: Mean {self.selection_metrics} Score (selection score) Fold": [],
-                              f"GridSearch Test: Std {self.selection_metrics} Score Fold": [],
-                              "GridSearch Mean Training Time (s)": [],
-                              "GridSearch Mean Training Time (s) Fold": [],
-                              "GridSearch Best Parameters": [],
-                              "GridSearch Best Algo": []
+        hyperparam_results = {
+            "Algo Name": [],
+            "Preprocessor Name": [],
+            f"GridSearch Test: Mean {self.selection_metrics} Score (selection score)": [],
+            f"GridSearch Test: Std {self.selection_metrics} Score": [],
+            f"GridSearch Test: Mean {self.selection_metrics} Score (selection score) Fold": [],
+            f"GridSearch Test: Std {self.selection_metrics} Score Fold": [],
+            "GridSearch Mean Training Time (s)": [],
+            "GridSearch Mean Training Time (s) Fold": [],
+            "GridSearch Best Parameters": [],
+            "GridSearch Best Algo": []
                               }
 
-        # On initialise les entrées du fichier résultat 
+        # On initialise les entrées du fichier résultat
         detailed_results = {"Algo Name": [],
                             "Preprocessor Name": [],
                             "y_pred_best_hyper": [],
@@ -382,7 +389,7 @@ class ModelComparator():
 
     def return_predictions(self):
 
-        # on retourne les predictions 
+        # on retourne les predictions
         y_true = self.detailed_results["y_true"].iloc[0]
         X_true = self.detailed_results["X_true"].iloc[0]
 
@@ -390,62 +397,94 @@ class ModelComparator():
         self.models_predictions['y_true'] = y_true
 
         for i, name in enumerate(self.detailed_results.index):
-            self.models_predictions[f'y_pred_{name}'] = self.detailed_results.loc[name, 'y_pred_best_hyper']
+            self.models_predictions[f'y_pred_{name}'] = (
+                self.detailed_results.loc[name, 'y_pred_best_hyper']
+            )
 
         return
 
     def summary_error(self):
 
         self.detailed_results["Squared Error (Test)"] = self.detailed_results.apply(
-            lambda x: (np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"]))**2, axis=1)
+            lambda x: (np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"]))**2,
+            axis=1)
         self.detailed_results["Root Mean Squared Error (Test)"] = self.detailed_results.apply(
-            lambda x: root_mean_squared_error(x["y_true"], x["y_pred_best_hyper"]), axis=1)
+            lambda x: root_mean_squared_error(x["y_true"], x["y_pred_best_hyper"]),
+            axis=1)
         self.detailed_results["Root Std Squared Error (Test)"] = self.detailed_results.apply(
-            lambda x: (np.std(x["Squared Error (Test)"]))**0.5, axis=1)
+            lambda x: (np.std(x["Squared Error (Test)"]))**0.5,
+            axis=1)
         self.detailed_results["Root min Squared Error (Test)"] = self.detailed_results.apply(
-            lambda x: (np.min(x["Squared Error (Test)"])**0.5), axis=1)
+            lambda x: (np.min(x["Squared Error (Test)"])**0.5),
+            axis=1)
         self.detailed_results["Root Q1 Squared Error (Test)"] = self.detailed_results.apply(
-            lambda x: (np.percentile(x["Squared Error (Test)"], 25)**0.5), axis=1)
+            lambda x: (np.percentile(x["Squared Error (Test)"], 25)**0.5),
+            axis=1)
         self.detailed_results["Root Median Squared Error (Test)"] = self.detailed_results.apply(
-            lambda x: (np.percentile(x["Squared Error (Test)"], 50)**0.5), axis=1)
+            lambda x: (np.percentile(x["Squared Error (Test)"], 50)**0.5),
+            axis=1)
         self.detailed_results["Root Q3 Squared Error (Test)"] = self.detailed_results.apply(
-            lambda x: (np.percentile(x["Squared Error (Test)"], 75)**0.5), axis=1)
+            lambda x: (np.percentile(x["Squared Error (Test)"], 75)**0.5),
+            axis=1)
         self.detailed_results["Root max Squared Error (Test)"] = self.detailed_results.apply(
-            lambda x: (np.max(x["Squared Error (Test)"])**0.5), axis=1)
+            lambda x: (np.max(x["Squared Error (Test)"])**0.5),
+            axis=1)
 
         self.detailed_results["Absolute Error (Test)"] = self.detailed_results.apply(
-            lambda x: abs(np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"])), axis=1)
+            lambda x: abs(np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"])),
+            axis=1)
         self.detailed_results["Mean Absolute Error (Test)"] = self.detailed_results.apply(
-            lambda x: mean_absolute_error(x["y_true"], x["y_pred_best_hyper"]), axis=1)
+            lambda x: mean_absolute_error(x["y_true"], x["y_pred_best_hyper"]),
+            axis=1)
         self.detailed_results["Std Absolute Error (Test)"] = self.detailed_results.apply(
-            lambda x: np.std(x["Absolute Error (Test)"]), axis=1)
+            lambda x: np.std(x["Absolute Error (Test)"]),
+            axis=1)
         self.detailed_results["min Absolute Error (Test)"] = self.detailed_results.apply(
-            lambda x: np.min(x["Absolute Error (Test)"]), axis=1)
+            lambda x: np.min(x["Absolute Error (Test)"]),
+            axis=1)
         self.detailed_results["Q1 Absolute Error (Test)"] = self.detailed_results.apply(
-            lambda x:  np.percentile(x["Absolute Error (Test)"], 25), axis=1)
+            lambda x:  np.percentile(x["Absolute Error (Test)"], 25),
+            axis=1)
         self.detailed_results["Median Absolute Error (Test)"] = self.detailed_results.apply(
-            lambda x: np.percentile(x["Absolute Error (Test)"], 50), axis=1)
+            lambda x: np.percentile(x["Absolute Error (Test)"], 50),
+            axis=1)
         self.detailed_results["Q3 Absolute Error (Test)"] = self.detailed_results.apply(
-            lambda x: np.percentile(x["Absolute Error (Test)"], 75), axis=1)
+            lambda x: np.percentile(x["Absolute Error (Test)"], 75),
+            axis=1)
         self.detailed_results["max Absolute Error (Test)"] = self.detailed_results.apply(
-            lambda x: np.max(x["Absolute Error (Test)"]), axis=1)
+            lambda x: np.max(x["Absolute Error (Test)"]),
+            axis=1)
 
-        self.detailed_results["Absolute Percentage Error (Test)"] = self.detailed_results.apply(
-            lambda x: (abs(np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"]))) / np.array(x["y_true"])*100, axis=1)
-        self.detailed_results["Mean Absolute Percentage Error (Test)"] = self.detailed_results.apply(
-            lambda x: np.mean(x["Absolute Percentage Error (Test)"]), axis=1)
+        self.detailed_results["Absolute Percentage Error (Test)"] = (
+            self.detailed_results.apply(
+                lambda x: (abs(np.array(x["y_true"]) - np.array(x["y_pred_best_hyper"])))
+                / np.array(x["y_true"])*100,
+                axis=1)
+            )
+        self.detailed_results["Mean Absolute Percentage Error (Test)"] = (
+            self.detailed_results.apply(lambda x: np.mean(x["Absolute Percentage Error (Test)"]),
+                                        axis=1)
+            )
         self.detailed_results["Std Absolute Percentage Error (Test)"] = self.detailed_results.apply(
-            lambda x: np.std(x["Absolute Percentage Error (Test)"]), axis=1)
+            lambda x: np.std(x["Absolute Percentage Error (Test)"]),
+            axis=1)
         self.detailed_results["min Absolute Percentage Error (Test)"] = self.detailed_results.apply(
-            lambda x: np.min(x["Absolute Percentage Error (Test)"]), axis=1)
+            lambda x: np.min(x["Absolute Percentage Error (Test)"]),
+            axis=1)
         self.detailed_results["Q1 Absolute Percentage Error (Test)"] = self.detailed_results.apply(
-            lambda x:  np.percentile(x["Absolute Percentage Error (Test)"], 25), axis=1)
-        self.detailed_results["Median Absolute Percentage Error (Test)"] = self.detailed_results.apply(
-            lambda x: np.percentile(x["Absolute Percentage Error (Test)"], 50), axis=1)
+            lambda x:  np.percentile(x["Absolute Percentage Error (Test)"], 25),
+            axis=1)
+        self.detailed_results["Median Absolute Percentage Error (Test)"] = (
+            self.detailed_results.apply(
+                lambda x: np.percentile(x["Absolute Percentage Error (Test)"], 50),
+                axis=1)
+            )
         self.detailed_results["Q3 Absolute Percentage Error (Test)"] = self.detailed_results.apply(
-            lambda x: np.percentile(x["Absolute Percentage Error (Test)"], 75), axis=1)
+            lambda x: np.percentile(x["Absolute Percentage Error (Test)"], 75),
+            axis=1)
         self.detailed_results["max Absolute Percentage Error (Test)"] = self.detailed_results.apply(
-            lambda x: np.max(x["Absolute Percentage Error (Test)"]), axis=1)
+            lambda x: np.max(x["Absolute Percentage Error (Test)"]),
+            axis=1)
 
         self.detailed_results.set_index(['Algo Name', 'Preprocessor Name'],
                                         inplace=True, drop=False)
