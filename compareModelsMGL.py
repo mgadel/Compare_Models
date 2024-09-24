@@ -146,13 +146,13 @@ class ModelComparator():
         ])
 
         poly_spline_preprocessor = ColumnTransformer(transformers=[
-            ('continuous', continuous_transformer, 
+            ('continuous', continuous_transformer,
              self.config["pipeline_preprocessing"]['non_interaction_features']),
             ('categorical', categorical_transformer, self.categorical_features),
             ('poly', poly_transformer,
              self.continuous_features.drop(self.config["pipeline_preprocessing"]
                                            ['non_interaction_features'])),
-            ('spline', spline_transformer, 
+            ('spline', spline_transformer,
              self.continuous_features.drop(self.config["pipeline_preprocessing"]
                                            ['non_interaction_features'])),
         ])
@@ -512,7 +512,7 @@ class ModelComparator():
 
         data_L2 = data_plot.sort_values(by=["Root Mean Squared Error (Test)"], ascending=False)
         data_L1 = data_plot.sort_values(by=["Mean Absolute Error (Test)"], ascending=False)
-        data_3 = data_plot.sort_values(by=["Mean Absolute Percentage Error (Test)"], 
+        data_3 = data_plot.sort_values(by=["Mean Absolute Percentage Error (Test)"],
                                        ascending=False)
 
         ax2.boxplot(
@@ -538,7 +538,9 @@ class ModelComparator():
                 vert=False
                 )
 
-        ax3.set_xlim([0, data_3["Absolute Percentage Error (Test)"].apply(max).sort_values()[:2].max()])
+        ax3.set_xlim(
+            [0, data_3["Absolute Percentage Error (Test)"].apply(max).sort_values()[:2].max()]
+            )
 
         fig_L2.savefig("error/L2_error_boxplot.png")
         fig_L1.savefig("error/L1_error_boxplot.png")
@@ -556,8 +558,14 @@ class ModelComparator():
             for j, preproc in enumerate(self.detailed_results['Preprocessor Name']):
                 if i < n_first:
 
-                    y_true = self.detailed_results.loc[(self.detailed_results["Algo Name"] == algo) & (self.detailed_results["Preprocessor Name"] == preproc), "y_true"].values[0]
-                    y_pred = self.detailed_results.loc[(self.detailed_results["Algo Name"] == algo) & (self.detailed_results["Preprocessor Name"] == preproc), "y_pred_best_hyper"].values[0]
+                    y_true = self.detailed_results.loc[
+                        (self.detailed_results["Algo Name"] == algo) &
+                        (self.detailed_results["Preprocessor Name"] == preproc),
+                        "y_true"].values[0]
+                    y_pred = self.detailed_results.loc[
+                        (self.detailed_results["Algo Name"] == algo) &
+                        (self.detailed_results["Preprocessor Name"] == preproc),
+                        "y_pred_best_hyper"].values[0]
 
                     fig, axs = plt.subplots(ncols=2)
 
@@ -592,7 +600,8 @@ class ModelComparator():
         self.init_metrics()
         self.init_gridsearch_results()
 
-        # on sort la boucle kfold pour s'assurer que les algo sont bien entraintés sur les meme folds
+        # on sort la boucle kfold pour s'assurer que les algo sont bien
+        # entraintés sur les meme folds
         kf = KFold(n_splits=self.config["settings"]['cv_test'], shuffle=True, random_state=42)
 
         for name, (classifier, params) in self.dict_algo.items():
@@ -634,22 +643,30 @@ class ModelComparator():
                     # on sauve les résultats de la recherche des meilleurs hyperparameters
                     # on a pour chaque entrée une liste de K_fold valeurs.
                     mean_grid_score.append(round(grid.best_score_, 3))
-                    std_grid_score.append(round(grid.cv_results_[f'std_test_{self.selection_metrics}'][grid.best_index_], 3))
+                    std_grid_score.append(
+                        round(grid.cv_results_[f'std_test_{self.selection_metrics}']
+                                              [grid.best_index_], 3))
                     mean_grid_time.append(round(grid.refit_time_, 3))
                     best_grid_param.append(grid.best_params_)
                     best_grid_algo.append(grid.best_estimator_)
 
                     # residuals
                     y_pred_best_hyper.append(grid.best_estimator_.predict(X_test))
-                    # y_pred_best_hyper.append(grid.best_estimator_.predict_proba(X_test)[:, 1]) # pour categoriel
+                    # y_pred_best_hyper.append(grid.best_estimator_.predict_proba(X_test)[:, 1])
+                    # pour categoriel
                     y_true.append(y_test)
                     X_true = pd.concat([X_true, X_test])
 
                 self.hyperparam_results["Algo Name"].append(f"{name}")
                 self.hyperparam_results["Preprocessor Name"].append(f"{preproc_name}")
-                self.hyperparam_results[f"GridSearch Test: Mean {self.selection_metrics} Score (selection score) Fold"].append(np.negative(mean_grid_score))
-                self.hyperparam_results[f"GridSearch Test: Std {self.selection_metrics} Score Fold"].append(std_grid_score)
-                self.hyperparam_results["GridSearch Mean Training Time (s) Fold"].append(mean_grid_time)
+                self.hyperparam_results[
+                    f"GridSearch Test: Mean {self.selection_metrics} Score "
+                    "(selection score) Fold"].append(np.negative(mean_grid_score))
+                self.hyperparam_results[
+                    f"GridSearch Test: Std {self.selection_metrics} "
+                    "Score Fold"].append(std_grid_score)
+                self.hyperparam_results[
+                    "GridSearch Mean Training Time (s) Fold"].append(mean_grid_time)
                 self.hyperparam_results["GridSearch Best Parameters"].append(best_grid_param)
                 self.hyperparam_results["GridSearch Best Algo"].append(best_grid_algo)
 
@@ -667,21 +684,39 @@ class ModelComparator():
 
         # ON AGGREGE LES RESULTATS DE LA CROSS VALIDATION
 
-        # on a reconstruit, pour toutes les données, 2 vecteurs: y true et y_pred avec le meilleur set de hyperparameter
+        # on a reconstruit, pour toutes les données, 2 vecteurs: y true et y_pred avec le meilleur
+        # set de hyperparameter
         # possible sur les K-1 fold de l'entraintement.
         # 1) pour chaque métrique, on estime min, max, Q1, Q2, Q3
         # 2) on étudie les résidus
         # on evalue les métriques qui nous intéressent
-        self.hyperparam_results[f"GridSearch Test: Mean {self.selection_metrics} Score (selection score)"] = np.mean(self.hyperparam_results[f"GridSearch Test: Mean {self.selection_metrics} Score (selection score) Fold"], axis=1)
-        self.hyperparam_results[f"GridSearch Test: Std {self.selection_metrics} Score"] = np.mean(self.hyperparam_results[f"GridSearch Test: Std {self.selection_metrics} Score Fold"], axis=1)
-        self.hyperparam_results["GridSearch Mean Training Time (s)"] = np.mean(self.hyperparam_results["GridSearch Mean Training Time (s) Fold"], axis=1)
+        self.hyperparam_results[
+            f"GridSearch Test: Mean {self.selection_metrics}"
+            " Score (selection score)"] = (
+                np.mean(self.hyperparam_results[f"GridSearch Test: Mean {self.selection_metrics}"
+                                                " Score (selection score) Fold"], axis=1)
+                                        )
+        self.hyperparam_results[f"GridSearch Test: Std {self.selection_metrics}"
+                                " Score"] = (
+                np.mean(self.hyperparam_results[f"GridSearch Test: Std {self.selection_metrics}"
+                                                " Score Fold"], axis=1)
+                                            )
+        self.hyperparam_results["GridSearch Mean Training Time (s)"] = (
+            np.mean(self.hyperparam_results["GridSearch Mean Training Time (s) Fold"], axis=1)
+            )
         self.hyperparam_results = pd.DataFrame(self.hyperparam_results)
-        self.hyperparam_results.sort_values(by=[f"GridSearch Test: Mean {self.selection_metrics} Score (selection score)"], ascending=True, inplace=True)
+        self.hyperparam_results.sort_values(
+            by=[f"GridSearch Test: Mean {self.selection_metrics} Score (selection score)"],
+            ascending=True, inplace=True)
         self.hyperparam_results.set_index(['Algo Name', 'Preprocessor Name'], inplace=True)
 
         self.detailed_results = pd.DataFrame(self.detailed_results)
-        self.detailed_results["y_pred_best_hyper"] = self.detailed_results["y_pred_best_hyper"].apply(lambda x: flatten(x))
-        self.detailed_results["y_true"] = self.detailed_results["y_true"].apply(lambda x: flatten(x))
+        self.detailed_results["y_pred_best_hyper"] = (
+            self.detailed_results["y_pred_best_hyper"].apply(lambda x: flatten(x))
+            )
+        self.detailed_results["y_true"] = (
+            self.detailed_results["y_true"].apply(lambda x: flatten(x))
+            )
 
         self.summary_error()
         self.detailed_results.sort_values(
@@ -770,7 +805,9 @@ class ModelComparator():
                      ).to_csv('results/best_model_best_hyperparam.csv')
 
         # to do LEARN BEST ALGO
-        with open(f'best_algo/best_algo_{self.best_algo}_{self.best_preproc}_pickle.obj', 'wb') as f:
+        with open(
+            f'best_algo/best_algo_{self.best_algo}_{self.best_preproc}_pickle.obj', 'wb'
+                 ) as f:
             pickle.dump(best_grid.best_estimator_, f)
 
 
@@ -789,8 +826,12 @@ if __name__ == "__main__":
            - on met les bon types
     """
 
-    assert sys.argv[2] in ["-regression", "-classification"], "l'option est mauvaise. Veuillez séléctionner '-regression' ou '-classification' "
-    # assert sys.argv[2] in [None,"-save"], "l'option est mauvaise. Veuillez séléctionner 'None' ou '-save' "
+    assert sys.argv[2] in ["-regression", "-classification"], (
+        "l'option est mauvaise. Veuillez séléctionner '-regression' ou '-classification' "
+        )
+
+    # assert sys.argv[2] in [None,"-save"], "l'option est mauvaise.
+    # Veuillez séléctionner 'None' ou '-save' "
 
     # juste pour débugger facilement - les dataset CLEAN
     # data = "data/dfbase.csv"

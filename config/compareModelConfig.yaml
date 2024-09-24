@@ -15,9 +15,9 @@ input_models:
           "Lasso",
           "Elastic Net",
           "Decision Tree",
-          #"Random Forest",
-          #"Gradient Boosting",
-          #"Extreme Gradient Boosting",
+          "Random Forest",
+          "Gradient Boosting",
+          "Extreme Gradient Boosting",
           #"Light GBM"
           ]
   classif : ["Logistic Regression",
@@ -35,8 +35,8 @@ input_models:
 # GLOBAL PREPROCESSING PIPELINE PARAMETERS
 pipeline_preprocessing:
   preprocesseurs_all_algo : ["simple", "poly","poly and spline"] #["simple"]
-  poly_deg : 3
-  spline_knots : 3
+  poly_deg : 2
+  spline_knots : 2
   spline_degree : 2
   non_interaction_features : []
   scaler : ["Normalizer"] #"MinMax", "Standard"
