@@ -1,0 +1,157 @@
+# INITIAL SETTING
+settings:
+  data_directory: ../data/
+  cv_test: 2
+  model_name: best_model.pickle
+
+# GLOBAL GRID SEARCH SETTINGS
+grid_search:
+  cv : 5
+
+# GLOBAL MODELS 
+input_models:
+  reg :  ["Linear Regression",
+          "Ridge",
+          "Lasso",
+          "Elastic Net",
+          "Decision Tree",
+          #"Random Forest",
+          #"Gradient Boosting",
+          #"Extreme Gradient Boosting",
+          #"Light GBM"
+          ]
+  classif : ["Logistic Regression",
+          #"Ridge",
+          #"Lasso",
+          #"Elastic Net",
+          #"Decision Tree",
+          #"Random Forest",
+          #"KNN",
+          #"Gradient Boosting",
+          #"Extreme Gradient Boosting",
+          #"Light GBM"
+          ]
+
+# GLOBAL PREPROCESSING PIPELINE PARAMETERS
+pipeline_preprocessing:
+  preprocesseurs_all_algo : ["simple", "poly","poly and spline"] #["simple"]
+  poly_deg : 3
+  spline_knots : 3
+  spline_degree : 2
+  non_interaction_features : []
+  scaler : ["Normalizer"] #"MinMax", "Standard"
+
+# GLOBAL EVALUATION
+evaluation:
+  reg:
+    evaluation_metrics: ["RMSE","MAE",'MAPE',"Explained Variance", "R2 (not ajusted)","Max Residual Error","Min Residual Error","Q1 Residual Error","Q2 Residual Error","Q3 Residual Error","Max Residual Error2"]
+  classif:
+    evaluation_metrics: ['AUC','BIC']
+
+# PARAMETRE DE REGRESSION
+params_reg:
+  params_simple:
+    preproc: ["poly","poly and spline"] #["simple"]
+  params_ridge:
+    preproc: ["poly","poly and spline"] #["simple"]
+    alpha_start: -1
+    alpha_stop: 5
+    alpha_num: 5
+    max_iter: [1000]
+  params_lasso:
+    preproc: ["poly and spline"] #["simple"]
+    alpha_start: -1
+    alpha_stop: 5
+    alpha_num: 5
+    max_iter: [5000]
+    tol: [0.005]  # default 0.0001
+  params_elastic:
+    preproc: ["poly","poly and spline"] #["simple"]
+    alpha_start: -1
+    alpha_stop: 5
+    alpha_num: 5
+    max_iter: [5000]
+    tol: [0.005]  # default 0.0001
+  params_tree:
+    preproc: ["simple"] 
+    min_samples_split : [2, 5]
+  params_forest:
+    preproc: ["simple"] 
+    n_estimators : [100,200,500]
+    max_depth : [90, 100,110]
+    max_features: [2, 3, 4]
+  params_gb:
+    preproc: ["simple"] 
+    n_estimators: [10, 100, 500]
+    max_depth: [3, 5]
+    learning_rate: [0.01, 0.3]
+  params_xgb:
+    preproc: ["simple"] 
+    n_estimators: [10, 100, 500]
+    max_depth: [3, 5] # maximum depth of a tree. Deeper trees can capture more complex patterns in the data, but may also lead to overfitting
+    subsample: [0.5, 0.7]  # percentage of rows used for each tree construction. Lowering this value can prevent overfitting by training on a smaller subset of the data
+    learning_rate: [0.01, 0.3]  # step size shrinkage used in updates to prevent overfitting. Lower values make the model more robust by taking smaller steps.
+    # min_child_weight:  [3, 4]
+    num_boost_rounds: [1000]
+    early_stopping_rounds: [20]
+  params_lgbm:
+    preproc: ["simple"] 
+    n_estimators: [10, 100]
+    max_depth: [90, 100]
+    max_features: [2, 3]
+    min_samples_leaf:  [3, 4]
+    min_samples_split: [8, 10]
+  
+# PARAMETRES CLASSIFICATION
+params_classif:
+  params_gb:
+    learning_rate : [.01, .1]
+    max_depth : [3, 7 ]
+    subsample : [0.5, 1]
+    n_estimators : [100, 200]
+  params_rf:
+    n_estimators : [10, 100]
+    max_depth : [90, 100]
+    max_features: [2, 3]
+  params_knn:
+    preprocessor__continuous__scaler : [StandardScaler(), MinMaxScaler(), Normalizer()]
+    n_neighbors : [5,10]
+    p : [1, 2]
+    weights : ['uniform', 'distance']
+  params_ridge:
+  alpha_start: -1
+  alpha_stop: 5
+  alpha_num: 50
+  max_iter: [1000]
+params_lasso:
+  alpha_start: -1
+  alpha_stop: 5
+  alpha_num: 50
+  max_iter: [1000]
+params_elastic:
+  alpha_start: -1
+  alpha_stop: 5
+  alpha_num: 50
+  max_iter: [1000]
+params_gb:
+  n_estimators: [10, 100]
+  max_depth: [90, 100]
+  max_features: [2, 3]
+  #min_samples_leaf:  [3, 4]
+ # min_samples_split: [8, 10]
+params_xgb:
+  n_estimators: [10, 100]
+  max_depth: [90, 100]
+  max_features: [2, 3]
+  #min_samples_leaf:  [3, 4]
+  #min_samples_split: [8, 10]
+params_lgbm:
+  n_estimators: [10, 100]
+  max_depth: [90, 100]
+  max_features: [2, 3]
+  min_samples_leaf:  [3, 4]
+  #min_samples_split: [8, 10]
+  
+
+
+
