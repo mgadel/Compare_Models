@@ -568,45 +568,48 @@ class ModelComparator():
 
         print_log('....Plotting Residuals...')
 
+        print(self.detailed_results.head())
+
         # Study Residuals
-        for i, algo in enumerate(self.detailed_results['Algo Name']):
-            for j, preproc in enumerate(self.detailed_results['Preprocessor Name']):
-                if i < n_first:
+        for i, (algo, preproc) in enumerate(zip(self.detailed_results['Algo Name'],
+                                                self.detailed_results['Preprocessor Name'])):
 
-                    y_true = self.detailed_results.loc[
-                        (self.detailed_results["Algo Name"] == algo) &
-                        (self.detailed_results["Preprocessor Name"] == preproc),
-                        "y_true"].values[0]
-                    y_pred = self.detailed_results.loc[
-                        (self.detailed_results["Algo Name"] == algo) &
-                        (self.detailed_results["Preprocessor Name"] == preproc),
-                        "y_pred_best_hyper"].values[0]
+            if i < n_first:
 
-                    fig, axs = plt.subplots(ncols=2)
+                y_true = self.detailed_results.loc[
+                    (self.detailed_results["Algo Name"] == algo) &
+                    (self.detailed_results["Preprocessor Name"] == preproc),
+                    "y_true"].values[0]
+                y_pred = self.detailed_results.loc[
+                    (self.detailed_results["Algo Name"] == algo) &
+                    (self.detailed_results["Preprocessor Name"] == preproc),
+                    "y_pred_best_hyper"].values[0]
 
-                    PredictionErrorDisplay.from_predictions(
-                        y_true=np.array(y_true),
-                        y_pred=np.array(y_pred),
-                        kind="actual_vs_predicted",
-                        ax=axs[0],
-                        scatter_kwargs={"alpha": 0.2, "color": "tab:blue"},
-                        line_kwargs={"color": "tab:red"},
-                        )
-                    axs[0].set_title("Actual vs. Predicted values")
+                fig, axs = plt.subplots(ncols=2)
 
-                    PredictionErrorDisplay.from_predictions(
-                        y_true=np.array(y_true),
-                        y_pred=np.array(y_pred),
-                        kind="residual_vs_predicted",
-                        ax=axs[1],
-                        scatter_kwargs={"alpha": 0.2, "color": "tab:blue"},
-                        line_kwargs={"color": "tab:red"},
-                        )
-                    axs[1].set_title("Residuals vs. Predicted Values")
-                    fig.suptitle(f"Plotting cross-validated predictions - {algo} {preproc}")
+                PredictionErrorDisplay.from_predictions(
+                    y_true=np.array(y_true),
+                    y_pred=np.array(y_pred),
+                    kind="actual_vs_predicted",
+                    ax=axs[0],
+                    scatter_kwargs={"alpha": 0.2, "color": "tab:blue"},
+                    line_kwargs={"color": "tab:red"},
+                    )
+                axs[0].set_title("Actual vs. Predicted values")
 
-                    fig.savefig(f"residuals/{algo}_{preproc}.png")
-                    plt.close()
+                PredictionErrorDisplay.from_predictions(
+                    y_true=np.array(y_true),
+                    y_pred=np.array(y_pred),
+                    kind="residual_vs_predicted",
+                    ax=axs[1],
+                    scatter_kwargs={"alpha": 0.2, "color": "tab:blue"},
+                    line_kwargs={"color": "tab:red"},
+                    )
+                axs[1].set_title("Residuals vs. Predicted Values")
+                fig.suptitle(f"Plotting cross-validated predictions - {algo} {preproc}")
+
+                fig.savefig(f"residuals/{algo}_{preproc}.png")
+                plt.close()
 
         return
 
@@ -623,10 +626,8 @@ class ModelComparator():
             print_log(f"\n {name} \n")
 
             for preproc_name, preproc in self._preprocesseurs.items():
-                print(preproc_name)
-                print(self.dict_preproc[name])
                 if preproc_name in self.dict_preproc[name]:
-                    
+
                     print_log(f"\n {preproc_name} \n")
 
                     mean_grid_score = []
