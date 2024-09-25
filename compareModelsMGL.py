@@ -291,7 +291,21 @@ class ModelComparator():
                                                         ['min_samples_split'],
         }
 
-        # Initialize different scalers
+        # PREPROCESSEUR INITIALISATION
+        # on crée un dictionnaire des préprocesseurs de transformation des variables (poly, simple) a utiliser pour chacun des algorithmes
+
+        self.dict_preproc={
+            "Linear Regression": self.config["params_reg"]['params_simple']['preproc'],
+            "Ridge": self.config["params_reg"]['params_ridge']['preproc'],
+            "Lasso": self.config["params_reg"]['params_lasso']['preproc'],
+            "Elastic Net": self.config["params_reg"]['params_elastic']['preproc'],
+            "Decision Tree": self.config["params_reg"]['params_tree']['preproc'],
+            "Random Forest": self.config["params_reg"]['params_forest']['preproc'],
+            "Gradient Boosting": self.config["params_reg"]['params_gb']['preproc'],
+            "Extreme Gradient Boosting": self.config["params_reg"]['params_xgb']['preproc']
+        }
+
+        # SCALER INITIALISATION
         dict_scaler = {
             "Standard": StandardScaler(),
             "MinMax": MinMaxScaler(),
@@ -299,7 +313,6 @@ class ModelComparator():
         }
 
         # On ajoute les scalers dans la liste des différents hyperparametres à ajuster pour algos
-        # La liste des scalers est définie dans les parametres du modele
         for param in [params_reg_linear, params_reg_ridge, params_reg_lasso, params_reg_elastic,
                       params_reg_tree, params_reg_forest, params_reg_gb, params_reg_xgb,
                       params_reg_lgbm]:
@@ -308,7 +321,7 @@ class ModelComparator():
             for scaler in self.config["pipeline_preprocessing"]['scaler']:
                 param['preprocessor__continuous__scaler'].append(dict_scaler[scaler])
 
-        # on initialise le dictionnaire sur lequel on va réaliser la gridsearch
+        # INITIALISATION DU DICTIONNAIRE GRID SEARCH
         self.dict_algo = {
                 "Linear Regression": (LinearRegression(fit_intercept=True), params_reg_linear),
                 "Ridge": (Ridge(fit_intercept=True), params_reg_ridge),
@@ -324,10 +337,12 @@ class ModelComparator():
                 # "Light GBM": (LGBMRegressor(), params_reg_lgbm),
             }
 
+        # on initialise les algorithmes que l'on veux étudier dans le fichier de parametres
         self.dict_algo = {key: self.dict_algo[key] for key in self.config["input_models"]['reg']}
 
-        # on log le dictionnaire
-        print(self.dict_algo)
+        # on ajoute le dictionnaire dans le fichier de log
+        print_log(self.dict_algo)
+
         return None
 
     def init_metrics(self, selection_metric_classification='AUC',
@@ -608,79 +623,83 @@ class ModelComparator():
             print_log(f"\n {name} \n")
 
             for preproc_name, preproc in self._preprocesseurs.items():
-                print_log(f"\n {preproc_name} \n")
+                print(preproc_name)
+                print(self.dict_preproc[name])
+                if preproc_name in self.dict_preproc[name]:
+                    
+                    print_log(f"\n {preproc_name} \n")
 
-                mean_grid_score = []
-                std_grid_score = []
-                mean_grid_time = []
-                best_grid_param = []
-                best_grid_algo = []
-                y_pred_best_hyper = []
-                y_true = []
-                X_true = pd.DataFrame(columns=self.X.columns)
+                    mean_grid_score = []
+                    std_grid_score = []
+                    mean_grid_time = []
+                    best_grid_param = []
+                    best_grid_algo = []
+                    y_pred_best_hyper = []
+                    y_true = []
+                    X_true = pd.DataFrame(columns=self.X.columns)
 
-                # pour chaque fold on réalise un grid search puis on évalue le meilleur modele
-                for train_index, test_index in kf.split(self.X, self.Y):
-                    X_train_val, X_test, = self.X.loc[train_index], self.X.loc[test_index]
-                    y_train_val, y_test = self.Y.loc[train_index], self.Y.loc[test_index]
+                    # pour chaque fold on réalise un grid search puis on évalue le meilleur modele
+                    for train_index, test_index in kf.split(self.X, self.Y):
+                        X_train_val, X_test, = self.X.loc[train_index], self.X.loc[test_index]
+                        y_train_val, y_test = self.Y.loc[train_index], self.Y.loc[test_index]
 
-                    pip = Pipeline(steps=[
-                        ('preprocessor', preproc),
-                        ('classifier', classifier)
-                    ])
+                        pip = Pipeline(steps=[
+                            ('preprocessor', preproc),
+                            ('classifier', classifier)
+                        ])
 
-                    if params is not None:
-                        grid = GridSearchCV(estimator=pip,
-                                            param_grid=params,
-                                            cv=self.config["grid_search"]["cv"],
-                                            scoring=self.list_metrics,
-                                            refit=self.selection_metrics,
-                                            # verbose=1,
-                                            n_jobs=-1,
-                                            error_score='raise'
-                                            ).fit(X_train_val, y_train_val)
+                        if params is not None:
+                            grid = GridSearchCV(estimator=pip,
+                                                param_grid=params,
+                                                cv=self.config["grid_search"]["cv"],
+                                                scoring=self.list_metrics,
+                                                refit=self.selection_metrics,
+                                                # verbose=1,
+                                                n_jobs=-1,
+                                                error_score='raise'
+                                                ).fit(X_train_val, y_train_val)
 
-                    # on sauve les résultats de la recherche des meilleurs hyperparameters
-                    # on a pour chaque entrée une liste de K_fold valeurs.
-                    mean_grid_score.append(round(grid.best_score_, 3))
-                    std_grid_score.append(
-                        round(grid.cv_results_[f'std_test_{self.selection_metrics}']
-                                              [grid.best_index_], 3))
-                    mean_grid_time.append(round(grid.refit_time_, 3))
-                    best_grid_param.append(grid.best_params_)
-                    best_grid_algo.append(grid.best_estimator_)
+                        # on sauve les résultats de la recherche des meilleurs hyperparameters
+                        # on a pour chaque entrée une liste de K_fold valeurs.
+                        mean_grid_score.append(round(grid.best_score_, 3))
+                        std_grid_score.append(
+                            round(grid.cv_results_[f'std_test_{self.selection_metrics}']
+                                                [grid.best_index_], 3))
+                        mean_grid_time.append(round(grid.refit_time_, 3))
+                        best_grid_param.append(grid.best_params_)
+                        best_grid_algo.append(grid.best_estimator_)
 
-                    # residuals
-                    y_pred_best_hyper.append(grid.best_estimator_.predict(X_test))
-                    # y_pred_best_hyper.append(grid.best_estimator_.predict_proba(X_test)[:, 1])
-                    # pour categoriel
-                    y_true.append(y_test)
-                    X_true = pd.concat([X_true, X_test])
+                        # residuals
+                        y_pred_best_hyper.append(grid.best_estimator_.predict(X_test))
+                        # y_pred_best_hyper.append(grid.best_estimator_.predict_proba(X_test)[:, 1])
+                        # pour categoriel
+                        y_true.append(y_test)
+                        X_true = pd.concat([X_true, X_test])
 
-                self.hyperparam_results["Algo Name"].append(f"{name}")
-                self.hyperparam_results["Preprocessor Name"].append(f"{preproc_name}")
-                self.hyperparam_results[
-                    f"GridSearch Test: Mean {self.selection_metrics} Score "
-                    "(selection score) Fold"].append(np.negative(mean_grid_score))
-                self.hyperparam_results[
-                    f"GridSearch Test: Std {self.selection_metrics} "
-                    "Score Fold"].append(std_grid_score)
-                self.hyperparam_results[
-                    "GridSearch Mean Training Time (s) Fold"].append(mean_grid_time)
-                self.hyperparam_results["GridSearch Best Parameters"].append(best_grid_param)
-                self.hyperparam_results["GridSearch Best Algo"].append(best_grid_algo)
+                    self.hyperparam_results["Algo Name"].append(f"{name}")
+                    self.hyperparam_results["Preprocessor Name"].append(f"{preproc_name}")
+                    self.hyperparam_results[
+                        f"GridSearch Test: Mean {self.selection_metrics} Score "
+                        "(selection score) Fold"].append(np.negative(mean_grid_score))
+                    self.hyperparam_results[
+                        f"GridSearch Test: Std {self.selection_metrics} "
+                        "Score Fold"].append(std_grid_score)
+                    self.hyperparam_results[
+                        "GridSearch Mean Training Time (s) Fold"].append(mean_grid_time)
+                    self.hyperparam_results["GridSearch Best Parameters"].append(best_grid_param)
+                    self.hyperparam_results["GridSearch Best Algo"].append(best_grid_algo)
 
-                # on estime sur le meilleur modele sur le test
-                # on rappelle que lorsque refit est entré comme parametre alors
-                # grid_gb_fitted.score(X_test, y_test) =
-                # roc_auc_score(y_test,best_gb.predict_proba(X_test)[:,1])
+                    # on estime sur le meilleur modele sur le test
+                    # on rappelle que lorsque refit est entré comme parametre alors
+                    # grid_gb_fitted.score(X_test, y_test) =
+                    # roc_auc_score(y_test,best_gb.predict_proba(X_test)[:,1])
 
-                self.detailed_results["Algo Name"].append(f"{name}")
-                self.detailed_results["Preprocessor Name"].append(f"{preproc_name}")
+                    self.detailed_results["Algo Name"].append(f"{name}")
+                    self.detailed_results["Preprocessor Name"].append(f"{preproc_name}")
 
-                self.detailed_results["y_pred_best_hyper"].append(y_pred_best_hyper)
-                self.detailed_results["y_true"].append(y_true)
-                self.detailed_results["X_true"].append(X_true)
+                    self.detailed_results["y_pred_best_hyper"].append(y_pred_best_hyper)
+                    self.detailed_results["y_true"].append(y_true)
+                    self.detailed_results["X_true"].append(X_true)
 
         # ON AGGREGE LES RESULTATS DE LA CROSS VALIDATION
 

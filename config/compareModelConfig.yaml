@@ -11,13 +11,13 @@ grid_search:
 # GLOBAL MODELS 
 input_models:
   reg :  ["Linear Regression",
-          "Ridge",
-          "Lasso",
-          "Elastic Net",
-          "Decision Tree",
+          #"Ridge",
+          #"Lasso",
+          #"Elastic Net",
+          #"Decision Tree",
           "Random Forest",
-          "Gradient Boosting",
-          "Extreme Gradient Boosting",
+          #"Gradient Boosting",
+          #"Extreme Gradient Boosting",
           #"Light GBM"
           ]
   classif : ["Logistic Regression",
@@ -34,7 +34,7 @@ input_models:
 
 # GLOBAL PREPROCESSING PIPELINE PARAMETERS
 pipeline_preprocessing:
-  preprocesseurs_all_algo : ["simple"] #["simple", "poly","poly and spline"] #["simple"]
+  preprocesseurs_all_algo : ["simple", "poly","poly and spline"] #["simple"]
   poly_deg : 2
   spline_knots : 2
   spline_degree : 2
@@ -51,7 +51,7 @@ evaluation:
 # PARAMETRE DE REGRESSION
 params_reg:
   params_simple:
-    preproc: ["poly","poly and spline"] #["simple"]
+    preproc: ["simple","poly","poly and spline"] #["simple"]
   params_ridge:
     preproc: ["poly","poly and spline"] #["simple"]
     alpha_start: -1
