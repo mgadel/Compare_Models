@@ -1,0 +1,430 @@
+{'Linear Regression': (LinearRegression(), {'preprocessor__continuous__scaler': [Normalizer()]}), 'Ridge': (Ridge(), {'classifier__alpha': array([1.00000000e-01, 3.16227766e+00, 1.00000000e+02, 3.16227766e+03,
+       1.00000000e+05]), 'preprocessor__continuous__scaler': [Normalizer()]}), 'Lasso': (Lasso(precompute=True, warm_start=True), {'classifier__alpha': array([1.00000000e-01, 3.16227766e+00, 1.00000000e+02, 3.16227766e+03,
+       1.00000000e+05]), 'classifier__max_iter': [5000], 'classifier__tol': [0.005], 'preprocessor__continuous__scaler': [Normalizer()]}), 'Elastic Net': (ElasticNet(precompute=True, warm_start=True), {'classifier__alpha': array([1.00000000e-01, 3.16227766e+00, 1.00000000e+02, 3.16227766e+03,
+       1.00000000e+05]), 'classifier__max_iter': [5000], 'classifier__tol': [0.005], 'preprocessor__continuous__scaler': [Normalizer()]}), 'Decision Tree': (DecisionTreeRegressor(), {'classifier__min_samples_split': [2, 5], 'preprocessor__continuous__scaler': [Normalizer()]}), 'Random Forest': (RandomForestRegressor(), {'classifier__n_estimators': [100, 200, 500], 'classifier__max_depth': [90, 100, 110], 'classifier__max_features': [2, 3, 4], 'preprocessor__continuous__scaler': [Normalizer()]}), 'Gradient Boosting': (GradientBoostingRegressor(warm_start=True), {'classifier__n_estimators': [10, 100, 500], 'classifier__max_depth': [3, 5], 'classifier__learning_rate': [0.01, 0.3], 'preprocessor__continuous__scaler': [Normalizer()]}), 'Extreme Gradient Boosting': (XGBRegressor(base_score=None, booster=None, callbacks=None,
+             colsample_bylevel=None, colsample_bynode=None,
+             colsample_bytree=None, device=None, early_stopping_rounds=None,
+             enable_categorical=False, eval_metric=None, feature_types=None,
+             gamma=None, grow_policy=None, importance_type=None,
+             interaction_constraints=None, learning_rate=None, max_bin=None,
+             max_cat_threshold=None, max_cat_to_onehot=None,
+             max_delta_step=None, max_depth=None, max_leaves=None,
+             min_child_weight=None, missing=nan, monotone_constraints=None,
+             multi_strategy=None, n_estimators=None, n_jobs=None,
+             num_parallel_tree=None, random_state=None, ...), {'classifier__n_estimators': [10, 100, 500], 'classifier__max_depth': [3, 5], 'classifier__subsample': [0.5, 0.7], 'classifier__learning_rate': [0.01, 0.3], 'preprocessor__continuous__scaler': [Normalizer()]})}
+
+
+ Linear Regression 
+
+
+
+ simple 
+
+
+
+ Ridge 
+
+
+
+ poly 
+
+
+
+ poly and spline 
+
+
+
+ Lasso 
+
+
+
+ poly and spline 
+
+
+
+ Elastic Net 
+
+
+
+ poly 
+
+
+
+ poly and spline 
+
+
+
+ Decision Tree 
+
+
+
+ simple 
+
+
+
+ Random Forest 
+
+
+
+ simple 
+
+
+
+ Gradient Boosting 
+
+
+
+ simple 
+
+
+
+ Extreme Gradient Boosting 
+
+
+
+ simple 
+
+
+
+ ---------- HYPERPARAMETER RESULTS ------------- 
+
+
+                                             GridSearch Test: Mean RMSE Score (selection score)  \
+Algo Name                 Preprocessor Name                                                       
+Gradient Boosting         simple                                                        46.816    
+Extreme Gradient Boosting simple                                                        46.827    
+Random Forest             simple                                                        58.102    
+Decision Tree             simple                                                        69.862    
+Lasso                     poly and spline                                               84.941    
+Elastic Net               poly and spline                                               85.926    
+                          poly                                                         102.199    
+Ridge                     poly                                                         151.684    
+                          poly and spline                                              264.355    
+Linear Regression         simple                                                       319.184    
+
+                                             GridSearch Test: Std RMSE Score  \
+Algo Name                 Preprocessor Name                                    
+Gradient Boosting         simple                                       1.690   
+Extreme Gradient Boosting simple                                       1.816   
+Random Forest             simple                                       2.812   
+Decision Tree             simple                                       3.856   
+Lasso                     poly and spline                              2.249   
+Elastic Net               poly and spline                              5.682   
+                          poly                                        57.020   
+Ridge                     poly                                       156.047   
+                          poly and spline                            384.784   
+Linear Regression         simple                                      38.713   
+
+                                             GridSearch Mean Training Time (s)  \
+Algo Name                 Preprocessor Name                                      
+Gradient Boosting         simple                                       310.605   
+Extreme Gradient Boosting simple                                         2.260   
+Random Forest             simple                                        13.872   
+Decision Tree             simple                                         1.478   
+Lasso                     poly and spline                                2.580   
+Elastic Net               poly and spline                               15.598   
+                          poly                                          21.092   
+Ridge                     poly                                           2.027   
+                          poly and spline                                2.502   
+Linear Regression         simple                                         0.086   
+
+                                                                    GridSearch Best Parameters  
+Algo Name                 Preprocessor Name                                                     
+Gradient Boosting         simple             [{'classifier__learning_rate': 0.3, 'classifie...  
+Extreme Gradient Boosting simple             [{'classifier__learning_rate': 0.01, 'classifi...  
+Random Forest             simple             [{'classifier__max_depth': 110, 'classifier__m...  
+Decision Tree             simple             [{'classifier__min_samples_split': 2, 'preproc...  
+Lasso                     poly and spline    [{'classifier__alpha': 3.1622776601683795, 'cl...  
+Elastic Net               poly and spline    [{'classifier__alpha': 3.1622776601683795, 'cl...  
+                          poly               [{'classifier__alpha': 0.1, 'classifier__max_i...  
+Ridge                     poly               [{'classifier__alpha': 3.1622776601683795, 'pr...  
+                          poly and spline    [{'classifier__alpha': 3.1622776601683795, 'pr...  
+Linear Regression         simple             [{'preprocessor__continuous__scaler': Normaliz...  
+
+
+ ---------- DETAILED CROSS VALIDATION RESULTS ------- 
+
+
+                                             Root Mean Squared Error (Test)  \
+Algo Name                 Preprocessor Name                                   
+Extreme Gradient Boosting simple                                     45.863   
+Gradient Boosting         simple                                     46.463   
+Random Forest             simple                                     56.967   
+Decision Tree             simple                                     66.807   
+Lasso                     poly and spline                            85.185   
+Linear Regression         simple                                    306.969   
+Ridge                     poly                                      397.929   
+                          poly and spline                           506.327   
+Elastic Net               poly                                      689.234   
+                          poly and spline                           701.149   
+
+                                             Root Std Squared Error (Test)  \
+Algo Name                 Preprocessor Name                                  
+Extreme Gradient Boosting simple                                   106.855   
+Gradient Boosting         simple                                   113.460   
+Random Forest             simple                                   127.151   
+Decision Tree             simple                                   199.584   
+Lasso                     poly and spline                          156.550   
+Linear Regression         simple                                  1032.352   
+Ridge                     poly                                    4212.781   
+                          poly and spline                         5406.526   
+Elastic Net               poly                                    7384.868   
+                          poly and spline                         7503.608   
+
+                                             Root min Squared Error (Test)  \
+Algo Name                 Preprocessor Name                                  
+Extreme Gradient Boosting simple                                     0.000   
+Gradient Boosting         simple                                     0.000   
+Random Forest             simple                                     0.000   
+Decision Tree             simple                                     0.000   
+Lasso                     poly and spline                            0.001   
+Linear Regression         simple                                     0.018   
+Ridge                     poly                                       0.001   
+                          poly and spline                            0.001   
+Elastic Net               poly                                       0.001   
+                          poly and spline                            0.001   
+
+                                             Root Q1 Squared Error (Test)  \
+Algo Name                 Preprocessor Name                                 
+Extreme Gradient Boosting simple                                    2.685   
+Gradient Boosting         simple                                    2.477   
+Random Forest             simple                                    2.242   
+Decision Tree             simple                                    1.529   
+Lasso                     poly and spline                          16.820   
+Linear Regression         simple                                   74.577   
+Ridge                     poly                                     10.971   
+                          poly and spline                          10.374   
+Elastic Net               poly                                     11.196   
+                          poly and spline                          13.189   
+
+                                             Root Median Squared Error (Test)  \
+Algo Name                 Preprocessor Name                                     
+Extreme Gradient Boosting simple                                        5.259   
+Gradient Boosting         simple                                        5.955   
+Random Forest             simple                                        8.559   
+Decision Tree             simple                                        6.754   
+Lasso                     poly and spline                              35.528   
+Linear Regression         simple                                      157.779   
+Ridge                     poly                                         24.674   
+                          poly and spline                              23.394   
+Elastic Net               poly                                         24.781   
+                          poly and spline                              30.523   
+
+                                             Root Q3 Squared Error (Test)  \
+Algo Name                 Preprocessor Name                                 
+Extreme Gradient Boosting simple                                   18.155   
+Gradient Boosting         simple                                   18.671   
+Random Forest             simple                                   27.044   
+Decision Tree             simple                                   22.572   
+Lasso                     poly and spline                          67.911   
+Linear Regression         simple                                  273.254   
+Ridge                     poly                                     50.438   
+                          poly and spline                          47.466   
+Elastic Net               poly                                     51.383   
+                          poly and spline                          63.826   
+
+                                             Root max Squared Error (Test)  \
+Algo Name                 Preprocessor Name                                  
+Extreme Gradient Boosting simple                                   732.475   
+Gradient Boosting         simple                                   906.013   
+Random Forest             simple                                   797.301   
+Decision Tree             simple                                  2248.626   
+Lasso                     poly and spline                         1375.092   
+Linear Regression         simple                                 11775.984   
+Ridge                     poly                                   46136.188   
+                          poly and spline                        59083.087   
+Elastic Net               poly                                   80486.138   
+                          poly and spline                        82191.374   
+
+                                             Mean Absolute Error (Test)  \
+Algo Name                 Preprocessor Name                               
+Extreme Gradient Boosting simple                                 20.624   
+Gradient Boosting         simple                                 20.827   
+Random Forest             simple                                 26.849   
+Decision Tree             simple                                 27.611   
+Lasso                     poly and spline                        55.660   
+Linear Regression         simple                                208.004   
+Ridge                     poly                                   46.043   
+                          poly and spline                        45.146   
+Elastic Net               poly                                   50.276   
+                          poly and spline                        59.030   
+
+                                             Std Absolute Error (Test)  \
+Algo Name                 Preprocessor Name                              
+Extreme Gradient Boosting simple                                40.964   
+Gradient Boosting         simple                                41.533   
+Random Forest             simple                                50.243   
+Decision Tree             simple                                60.834   
+Lasso                     poly and spline                       64.486   
+Linear Regression         simple                               225.752   
+Ridge                     poly                                 395.257   
+                          poly and spline                      504.310   
+Elastic Net               poly                                 687.398   
+                          poly and spline                      698.660   
+
+                                             min Absolute Error (Test)  \
+Algo Name                 Preprocessor Name                              
+Extreme Gradient Boosting simple                                 0.000   
+Gradient Boosting         simple                                 0.000   
+Random Forest             simple                                 0.000   
+Decision Tree             simple                                 0.000   
+Lasso                     poly and spline                        0.001   
+Linear Regression         simple                                 0.018   
+Ridge                     poly                                   0.001   
+                          poly and spline                        0.001   
+Elastic Net               poly                                   0.001   
+                          poly and spline                        0.001   
+
+                                             Q1 Absolute Error (Test)  \
+Algo Name                 Preprocessor Name                             
+Extreme Gradient Boosting simple                                2.685   
+Gradient Boosting         simple                                2.477   
+Random Forest             simple                                2.242   
+Decision Tree             simple                                1.529   
+Lasso                     poly and spline                      16.820   
+Linear Regression         simple                               74.577   
+Ridge                     poly                                 10.971   
+                          poly and spline                      10.374   
+Elastic Net               poly                                 11.196   
+                          poly and spline                      13.189   
+
+                                             Median Absolute Error (Test)  \
+Algo Name                 Preprocessor Name                                 
+Extreme Gradient Boosting simple                                    5.259   
+Gradient Boosting         simple                                    5.955   
+Random Forest             simple                                    8.559   
+Decision Tree             simple                                    6.754   
+Lasso                     poly and spline                          35.528   
+Linear Regression         simple                                  157.779   
+Ridge                     poly                                     24.674   
+                          poly and spline                          23.394   
+Elastic Net               poly                                     24.781   
+                          poly and spline                          30.523   
+
+                                             Q3 Absolute Error (Test)  \
+Algo Name                 Preprocessor Name                             
+Extreme Gradient Boosting simple                               18.155   
+Gradient Boosting         simple                               18.671   
+Random Forest             simple                               27.044   
+Decision Tree             simple                               22.572   
+Lasso                     poly and spline                      67.911   
+Linear Regression         simple                              273.254   
+Ridge                     poly                                 50.438   
+                          poly and spline                      47.466   
+Elastic Net               poly                                 51.383   
+                          poly and spline                      63.826   
+
+                                             max Absolute Error (Test)  \
+Algo Name                 Preprocessor Name                              
+Extreme Gradient Boosting simple                               732.475   
+Gradient Boosting         simple                               906.013   
+Random Forest             simple                               797.301   
+Decision Tree             simple                              2248.626   
+Lasso                     poly and spline                     1375.092   
+Linear Regression         simple                             11775.984   
+Ridge                     poly                               46136.188   
+                          poly and spline                    59083.087   
+Elastic Net               poly                               80486.138   
+                          poly and spline                    82191.374   
+
+                                             Mean Absolute Percentage Error (Test)  \
+Algo Name                 Preprocessor Name                                          
+Extreme Gradient Boosting simple                                          2640.158   
+Gradient Boosting         simple                                          2107.603   
+Random Forest             simple                                          2190.750   
+Decision Tree             simple                                           993.581   
+Lasso                     poly and spline                                21449.025   
+Linear Regression         simple                                        176228.440   
+Ridge                     poly                                           12160.248   
+                          poly and spline                                12422.017   
+Elastic Net               poly                                           10044.375   
+                          poly and spline                                14519.139   
+
+                                             Std Absolute Percentage Error (Test)  \
+Algo Name                 Preprocessor Name                                         
+Extreme Gradient Boosting simple                                        82417.476   
+Gradient Boosting         simple                                        76153.320   
+Random Forest             simple                                       110323.763   
+Decision Tree             simple                                        83734.598   
+Lasso                     poly and spline                              312701.548   
+Linear Regression         simple                                      2521894.002   
+Ridge                     poly                                         175190.285   
+                          poly and spline                              191296.160   
+Elastic Net               poly                                         135056.347   
+                          poly and spline                              281236.295   
+
+                                             min Absolute Percentage Error (Test)  \
+Algo Name                 Preprocessor Name                                         
+Extreme Gradient Boosting simple                                            0.000   
+Gradient Boosting         simple                                            0.000   
+Random Forest             simple                                            0.000   
+Decision Tree             simple                                            0.000   
+Lasso                     poly and spline                                   0.001   
+Linear Regression         simple                                            0.002   
+Ridge                     poly                                              0.001   
+                          poly and spline                                   0.000   
+Elastic Net               poly                                              0.000   
+                          poly and spline                                   0.000   
+
+                                             Q1 Absolute Percentage Error (Test)  \
+Algo Name                 Preprocessor Name                                        
+Extreme Gradient Boosting simple                                           1.313   
+Gradient Boosting         simple                                           1.486   
+Random Forest             simple                                           1.991   
+Decision Tree             simple                                           1.347   
+Lasso                     poly and spline                                  6.941   
+Linear Regression         simple                                          22.459   
+Ridge                     poly                                             4.772   
+                          poly and spline                                  4.660   
+Elastic Net               poly                                             5.234   
+                          poly and spline                                  6.221   
+
+                                             Median Absolute Percentage Error (Test)  \
+Algo Name                 Preprocessor Name                                            
+Extreme Gradient Boosting simple                                               3.567   
+Gradient Boosting         simple                                               4.019   
+Random Forest             simple                                               4.993   
+Decision Tree             simple                                               3.952   
+Lasso                     poly and spline                                     15.766   
+Linear Regression         simple                                              59.625   
+Ridge                     poly                                                11.653   
+                          poly and spline                                     11.234   
+Elastic Net               poly                                                12.507   
+                          poly and spline                                     14.986   
+
+                                             Q3 Absolute Percentage Error (Test)  \
+Algo Name                 Preprocessor Name                                        
+Extreme Gradient Boosting simple                                          16.518   
+Gradient Boosting         simple                                          16.019   
+Random Forest             simple                                          12.481   
+Decision Tree             simple                                          12.360   
+Lasso                     poly and spline                                 56.724   
+Linear Regression         simple                                         279.105   
+Ridge                     poly                                            41.826   
+                          poly and spline                                 40.466   
+Elastic Net               poly                                            43.796   
+                          poly and spline                                 48.308   
+
+                                             max Absolute Percentage Error (Test)  
+Algo Name                 Preprocessor Name                                        
+Extreme Gradient Boosting simple                                     1.195251e+07  
+Gradient Boosting         simple                                     1.102233e+07  
+Random Forest             simple                                     1.357690e+07  
+Decision Tree             simple                                     1.260881e+07  
+Lasso                     poly and spline                            2.355326e+07  
+Linear Regression         simple                                     1.472189e+08  
+Ridge                     poly                                       1.342132e+07  
+                          poly and spline                            1.204620e+07  
+Elastic Net               poly                                       7.957651e+06  
+                          poly and spline                            3.159488e+07  
+
+
+ ------- SUMMARY -------- 
+ 
+
+The best model is ('Extreme Gradient Boosting', 'simple')
+
+....Plotting Error Distribution...
+
+....Plotting Residuals...
+

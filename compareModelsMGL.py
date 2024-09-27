@@ -275,10 +275,10 @@ class ModelComparator():
             'classifier__max_depth': self.config["params_reg"]['params_xgb']['max_depth'],
             'classifier__subsample': self.config["params_reg"]['params_xgb']['subsample'],
             'classifier__learning_rate': self.config["params_reg"]['params_xgb']['learning_rate'],
-            'classifier__num_boost_rounds': self.config["params_reg"]['params_xgb']
-                                                       ['num_boost_rounds'],
-            'classifier__early_stopping_rounds': self.config["params_reg"]['params_xgb']
-                                                            ['early_stopping_rounds'],
+            # 'classifier__num_boost_rounds': self.config["params_reg"]['params_xgb']
+            #                                           ['num_boost_rounds'],
+            # 'classifier__early_stopping_rounds': self.config["params_reg"]['params_xgb']
+            #                                                ['early_stopping_rounds'],
         }
 
         params_reg_lgbm = {
@@ -292,9 +292,10 @@ class ModelComparator():
         }
 
         # PREPROCESSEUR INITIALISATION
-        # on crée un dictionnaire des préprocesseurs de transformation des variables (poly, simple) a utiliser pour chacun des algorithmes
+        # on crée un dictionnaire des préprocesseurs de transformation des variables (poly, simple)
+        # a utiliser pour chacun des algorithmes
 
-        self.dict_preproc={
+        self.dict_preproc = {
             "Linear Regression": self.config["params_reg"]['params_simple']['preproc'],
             "Ridge": self.config["params_reg"]['params_ridge']['preproc'],
             "Lasso": self.config["params_reg"]['params_lasso']['preproc'],
@@ -665,7 +666,7 @@ class ModelComparator():
                         mean_grid_score.append(round(grid.best_score_, 3))
                         std_grid_score.append(
                             round(grid.cv_results_[f'std_test_{self.selection_metrics}']
-                                                [grid.best_index_], 3))
+                                  [grid.best_index_], 3))
                         mean_grid_time.append(round(grid.refit_time_, 3))
                         best_grid_param.append(grid.best_params_)
                         best_grid_algo.append(grid.best_estimator_)
