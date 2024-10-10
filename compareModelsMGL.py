@@ -59,6 +59,11 @@ def print_log(text):
     with open('results/results.txt', 'a') as f:
         # sys.stdout = f  # Change the standard output to the file we created.
         # sys.stdout = original_stdout      # Reset the standard output to its original value
+        pd.set_option('display.max_columns', None)
+        pd.set_option('display.max_rows', None)
+        pd.set_option('display.width', None)
+        pd.set_option('display.max_colwidth', None)
+
         f.write(f'{text}\n')
         f.write('\n')
 
@@ -181,8 +186,7 @@ class ModelComparator():
         }
 
         params_class_elastic = {
-            'classifier__C': np.logspace(-1, 5, 20),
-            'classifier__l1_ratio': [0.25, 0.5, 0.75]
+            
         }
 
         params_class_tree = {
@@ -249,6 +253,11 @@ class ModelComparator():
                 self.config["params_reg"]['params_elastic']['alpha_stop'],
                 self.config["params_reg"]['params_elastic']['alpha_num'],
             ),
+            'classifier__l1_ratio': np.arange(
+                self.config["params_reg"]['params_elastic']['l1_start'],
+                self.config["params_reg"]['params_elastic']['l1_stop'],
+                self.config["params_reg"]['params_elastic']['l1_steps'],
+            ),
             'classifier__max_iter': self.config["params_reg"]['params_elastic']['max_iter'],
             'classifier__tol': self.config["params_reg"]['params_elastic']['tol'],
         }
@@ -261,7 +270,10 @@ class ModelComparator():
         params_reg_forest = {
             'classifier__n_estimators': self.config["params_reg"]['params_forest']['n_estimators'],
             'classifier__max_depth': self.config["params_reg"]['params_forest']['max_depth'],
-            'classifier__max_features': self.config["params_reg"]['params_forest']['max_features'],
+            'classifier__min_samples_split': self.config["params_reg"]['params_forest']
+                                                        ['min_samples_split'],
+            'classifier__min_samples_leaf': self.config["params_reg"]['params_forest']
+                                                       ['min_samples_leaf'],
         }
 
         params_reg_gb = {
@@ -275,10 +287,10 @@ class ModelComparator():
             'classifier__max_depth': self.config["params_reg"]['params_xgb']['max_depth'],
             'classifier__subsample': self.config["params_reg"]['params_xgb']['subsample'],
             'classifier__learning_rate': self.config["params_reg"]['params_xgb']['learning_rate'],
-            # 'classifier__num_boost_rounds': self.config["params_reg"]['params_xgb']
-            #                                           ['num_boost_rounds'],
-            # 'classifier__early_stopping_rounds': self.config["params_reg"]['params_xgb']
-            #                                                ['early_stopping_rounds'],
+            'classifier__colsample_bytree': self.config["params_reg"]['params_xgb']
+                                                       ['colsample_bytree'],
+            'classifier__min_child_weight': self.config["params_reg"]['params_xgb']
+                                                       ['min_child_weight'],
         }
 
         params_reg_lgbm = {

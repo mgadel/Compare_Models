@@ -1,7 +1,7 @@
 # INITIAL SETTING
 settings:
   data_directory: ../data/
-  cv_test: 2
+  cv_test: 10
   model_name: best_model.pickle
 
 # GLOBAL GRID SEARCH SETTINGS
@@ -35,7 +35,7 @@ input_models:
 # GLOBAL PREPROCESSING PIPELINE PARAMETERS
 pipeline_preprocessing:
   preprocesseurs_all_algo : ["simple", "poly","poly and spline"]
-  poly_deg : 2
+  poly_deg : 3
   spline_knots : 2
   spline_degree : 2
   non_interaction_features : []
@@ -57,29 +57,33 @@ params_reg:
     alpha_start: -1
     alpha_stop: 5
     alpha_num: 5
-    max_iter: [1000]
+    max_iter: [1000,10000]
   params_lasso:
     preproc: ["poly and spline"] #["simple"]
     alpha_start: -1
     alpha_stop: 5
     alpha_num: 5
-    max_iter: [5000]
-    tol: [0.005]  # default 0.0001
+    max_iter: [1000,10000]
+    tol: [0.0001,0.001]  # default 0.0001
   params_elastic:
     preproc: ["poly","poly and spline"] #["simple"]
     alpha_start: -1
     alpha_stop: 5
     alpha_num: 5
-    max_iter: [5000]
-    tol: [0.005]  # default 0.0001
+    l1_start: 0.3 # entre 0 et 1
+    l1_stop: 1
+    l1_steps: 0.1
+    max_iter: [1000,10000]
+    tol: [0.0001,0.001]  # default 0.0001
   params_tree:
     preproc: ["simple"] 
     min_samples_split : [2, 5]
   params_forest:
     preproc: ["simple"] 
-    n_estimators : [100,200,500]
-    max_depth : [90, 100,110]
-    max_features: [2, 3, 4]
+    n_estimators : [75,100,1100]  # Number of trees in random forest #[50,100,500,1000]
+    max_depth : [10, 50, 100]  # Maximum number of levels in tree
+    min_samples_split: [2, 5, 10]   # Minimum number of samples required to split a node
+    min_samples_leaf : [1, 2, 4] # Minimum number of samples required at each leaf node
   params_gb:
     preproc: ["simple"] 
     n_estimators: [10, 100, 500]
@@ -87,13 +91,12 @@ params_reg:
     learning_rate: [0.01, 0.3]
   params_xgb:
     preproc: ["simple"] 
-    n_estimators: [10, 100, 500]
-    max_depth: [3, 5] # maximum depth of a tree. Deeper trees can capture more complex patterns in the data, but may also lead to overfitting
-    subsample: [0.5, 0.7]  # percentage of rows used for each tree construction. Lowering this value can prevent overfitting by training on a smaller subset of the data
-    learning_rate: [0.01, 0.3]  # step size shrinkage used in updates to prevent overfitting. Lower values make the model more robust by taking smaller steps.
-    # min_child_weight:  [3, 4]
-    num_boost_rounds: [1000]
-    early_stopping_rounds: [20]
+    n_estimators: [10, 100, 500] # the number of boosting rounds or trees to build.
+    max_depth: [3, 4, 5] # maximum depth of a tree. Deeper trees can capture more complex patterns in the data, but may also lead to overfitting
+    learning_rate: [0.01, 0.1,0.2]  # eta for learning rate A lower learning rate makes the model more cautious and slower to adjust
+    min_child_weight:  [1, 3, 5] # The minimum sum of instance weights (also known as Hessian) needed in a child node
+    subsample: [0.6, 0.8, 1.0]  # The fraction of the training data used for training each tree.  Lowering this value can prevent overfitting by training on a smaller subset of the data
+    colsample_bytree: [0.6, 0.8, 1.0]  # The fraction of features (columns) used when building each tree.
   params_lgbm:
     preproc: ["simple"] 
     n_estimators: [10, 100]
