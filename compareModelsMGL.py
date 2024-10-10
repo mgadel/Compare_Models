@@ -4,7 +4,6 @@ import sys
 import pickle
 import yaml
 import os
-import numpy as np
 
 import matplotlib.pyplot as plt
 

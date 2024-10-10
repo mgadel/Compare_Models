@@ -10,7 +10,8 @@ grid_search:
 
 # GLOBAL MODELS 
 input_models:
-  reg :  ["Linear Regression",
+  reg :  [
+          #"Linear Regression",
           "Ridge",
           "Lasso",
           "Elastic Net",
@@ -39,7 +40,7 @@ pipeline_preprocessing:
   spline_knots : 2
   spline_degree : 2
   non_interaction_features : []
-  scaler : ["Normalizer"] #"MinMax", "Standard"
+  scaler : ["Normalizer","Standard"] #"MinMax", "Standard"
 
 # GLOBAL EVALUATION
 evaluation:
@@ -80,7 +81,7 @@ params_reg:
     min_samples_split : [2, 5]
   params_forest:
     preproc: ["simple"] 
-    n_estimators : [75,100,1100]  # Number of trees in random forest #[50,100,500,1000]
+    n_estimators : [75,100,120]  # Number of trees in random forest #[50,100,500,1000]
     max_depth : [10, 50, 100]  # Maximum number of levels in tree
     min_samples_split: [2, 5, 10]   # Minimum number of samples required to split a node
     min_samples_leaf : [1, 2, 4] # Minimum number of samples required at each leaf node
@@ -88,7 +89,7 @@ params_reg:
     preproc: ["simple"] 
     n_estimators: [10, 100, 500]
     max_depth: [3, 5]
-    learning_rate: [0.01, 0.3]
+    learning_rate: [0.01, 0.1]
   params_xgb:
     preproc: ["simple"] 
     n_estimators: [10, 100, 500] # the number of boosting rounds or trees to build.
