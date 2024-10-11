@@ -337,14 +337,12 @@ class ModelComparator():
         self.dict_algo = {
                 "Linear Regression": (LinearRegression(fit_intercept=True), params_reg_linear),
                 "Ridge": (Ridge(fit_intercept=True), params_reg_ridge),
-                "Lasso": (Lasso(fit_intercept=True,
-                                precompute=True, warm_start=True), params_reg_lasso),
-                "Elastic Net": (ElasticNet(fit_intercept=True,
-                                precompute=True, warm_start=True), params_reg_elastic),
+                "Lasso": (Lasso(fit_intercept=True), params_reg_lasso),
+                "Elastic Net": (ElasticNet(fit_intercept=True), params_reg_elastic),
                 "Decision Tree": (DecisionTreeRegressor(), params_reg_tree),
                 "Random Forest": (RandomForestRegressor(), params_reg_forest),
-                "Gradient Boosting": (GradientBoostingRegressor(warm_start=True), params_reg_gb),
-                "Extreme Gradient Boosting": (XGBRegressor(warm_start=True), params_reg_xgb),
+                "Gradient Boosting": (GradientBoostingRegressor(), params_reg_gb),
+                "Extreme Gradient Boosting": (XGBRegressor(), params_reg_xgb),
                 # pour l'instant on a un probleme d'installation avec light gbm
                 # "Light GBM": (LGBMRegressor(), params_reg_lgbm),
             }
@@ -534,7 +532,7 @@ class ModelComparator():
              "Mean Absolute Error (Test)", "Squared Error (Test)",
              "Root Mean Squared Error (Test)", "Mean Absolute Percentage Error (Test)",
              "Absolute Percentage Error (Test)", "Root max Squared Error (Test)",
-             "max Absolute Error (Test)", "max Absolute Error (Test)"
+             "max Absolute Error (Test)", "max Absolute Percentage Error (Test)"
              ]]
 
         data_L2 = data_plot.sort_values(by=["Root Mean Squared Error (Test)"], ascending=False)
@@ -548,18 +546,15 @@ class ModelComparator():
                 vert=False
                 )
         # on plot l'erreur max des 3 premiers algos
-        ax2.set_xlim([0, data_L2.head(3)["Root max Squared Error (Test)"].max()])
-        # ax2.set_xlim([0, data_L2["Squared Error (Test)"].apply(max).sort_values()[:2].max()])
+        ax2.set_xlim([0, data_L2.head(3)["Root max Squared Error (Test)"].max()**2])
 
         ax1.boxplot(
                 data_L1["Absolute Error (Test)"],
                 labels=data_L1['Algo Name'] + '_' + data_L1['Preprocessor Name'],
                 vert=False
                 )
-        print(data_L1)
-        # ax1.set_xlim([0, data_L1.sort_values(by=["Mean Absolute Error (Test)"])
-        # ["max Absolute Error (Test)"].iloc[0]])
-        ax1.set_xlim([0, data_L1["Absolute Error (Test)"].apply(max).sort_values()[:2].max()])
+
+        ax1.set_xlim([0, data_L2.head(3)["max Absolute Error (Test)"].max()])
 
         ax3.boxplot(
                 data_3["Absolute Percentage Error (Test)"],
@@ -568,7 +563,7 @@ class ModelComparator():
                 )
 
         ax3.set_xlim(
-            [0, data_3["Absolute Percentage Error (Test)"].apply(max).sort_values()[:2].max()]
+            [0, data_3.head(3)["max Absolute Percentage Error (Test)"].max()]
             )
 
         fig_L2.savefig("results/error/L2_error_boxplot.png")
