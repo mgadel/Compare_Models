@@ -40,7 +40,7 @@ pipeline_preprocessing:
   spline_knots : 2
   spline_degree : 2
   non_interaction_features : []
-  scaler : ["Normalizer","Standard"] #"MinMax", "Standard"
+  scaler : ["Standard"] #"MinMax", "Standard", "Normalizer",
 
 # GLOBAL EVALUATION
 evaluation:
@@ -92,12 +92,12 @@ params_reg:
     learning_rate: [0.01, 0.1]
   params_xgb:
     preproc: ["simple"] 
-    n_estimators: [10, 100, 500] # the number of boosting rounds or trees to build.
+    n_estimators: [100, 500] # the number of boosting rounds or trees to build.
     max_depth: [3, 4, 5] # maximum depth of a tree. Deeper trees can capture more complex patterns in the data, but may also lead to overfitting
-    learning_rate: [0.01, 0.1,0.2]  # eta for learning rate A lower learning rate makes the model more cautious and slower to adjust
+    learning_rate: [0.01, 0.1]  # eta for learning rate A lower learning rate makes the model more cautious and slower to adjust
     min_child_weight:  [1, 3, 5] # The minimum sum of instance weights (also known as Hessian) needed in a child node
-    subsample: [0.6, 0.8, 1.0]  # The fraction of the training data used for training each tree.  Lowering this value can prevent overfitting by training on a smaller subset of the data
-    colsample_bytree: [0.6, 0.8, 1.0]  # The fraction of features (columns) used when building each tree.
+    subsample: [0.6, 1.0]  #  [0.6, 0.8, 1.0]The fraction of the training data used for training each tree.  Lowering this value can prevent overfitting by training on a smaller subset of the data
+    colsample_bytree: [0.6, 1.0]  # [0.6, 0.8, 1.0] The fraction of features (columns) used when building each tree.
   params_lgbm:
     preproc: ["simple"] 
     n_estimators: [10, 100]

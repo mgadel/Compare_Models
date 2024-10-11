@@ -547,7 +547,9 @@ class ModelComparator():
                 labels=data_L2['Algo Name'] + '_' + data_L2['Preprocessor Name'],
                 vert=False
                 )
-        ax2.set_xlim([0, data_L2["Squared Error (Test)"].apply(max).sort_values()[:2].max()])
+        # on plot l'erreur max des 3 premiers algos
+        ax2.set_xlim([0, data_L2.head(3)["Root max Squared Error (Test)"].max()])
+        # ax2.set_xlim([0, data_L2["Squared Error (Test)"].apply(max).sort_values()[:2].max()])
 
         ax1.boxplot(
                 data_L1["Absolute Error (Test)"],
@@ -569,9 +571,9 @@ class ModelComparator():
             [0, data_3["Absolute Percentage Error (Test)"].apply(max).sort_values()[:2].max()]
             )
 
-        fig_L2.savefig("error/L2_error_boxplot.png")
-        fig_L1.savefig("error/L1_error_boxplot.png")
-        fig_3.savefig("error/APE_error_boxplot.png")
+        fig_L2.savefig("results/error/L2_error_boxplot.png")
+        fig_L1.savefig("results/error/L1_error_boxplot.png")
+        fig_3.savefig("results/error/APE_error_boxplot.png")
         plt.close()
 
         return
@@ -620,7 +622,7 @@ class ModelComparator():
                 axs[1].set_title("Residuals vs. Predicted Values")
                 fig.suptitle(f"Plotting cross-validated predictions - {algo} {preproc}")
 
-                fig.savefig(f"residuals/{algo}_{preproc}.png")
+                fig.savefig(f"results/residuals/{algo}_{preproc}.png")
                 plt.close()
 
         return
@@ -801,9 +803,9 @@ class ModelComparator():
             columns=["Algo Name", "Preprocessor Name", "y_pred_best_hyper",
                      "y_true", "X_true", "Squared Error (Test)", "Absolute Error (Test)",
                      "Absolute Percentage Error (Test)"], axis=1
-                     ).round(3).to_csv("results/detailed_results.csv")
-        self.hyperparam_results.to_csv("results/hyperparam_results.csv")
-        self.models_predictions.to_csv("results/models_predictions.csv", index=False)
+                     ).round(3).to_csv("results/detailed_output/detailed_results.csv")
+        self.hyperparam_results.to_csv("results/detailed_output/hyperparam_results.csv")
+        self.models_predictions.to_csv("results/detailed_output/models_predictions.csv", index=False)
 
         return
 
@@ -834,13 +836,24 @@ class ModelComparator():
 
         pd.DataFrame(best_grid.best_params_,
                      index=['Best Hyperparameters']
-                     ).to_csv('results/best_model_best_hyperparam.csv')
+                     ).to_csv('results/detailed_output/best_model_best_hyperparam.csv')
 
         # to do LEARN BEST ALGO
         with open(
-            f'best_algo/best_algo_{self.best_algo}_{self.best_preproc}_pickle.obj', 'wb'
+            f'results/best_algo/best_algo_{self.best_algo}_{self.best_preproc}_pickle.obj', 'wb'
                  ) as f:
             pickle.dump(best_grid.best_estimator_, f)
+
+
+def clean_folders(folder_path):
+
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            file_path = os.path.join(root, file)
+            os.remove(file_path)  # Delete the file
+    print("All previous results files have been deleted.")
+
+    return
 
 
 # on lance la fonction depuis le terminal
@@ -876,8 +889,8 @@ if __name__ == "__main__":
 
     study_residuals = True if sys.argv[3] == "-residuals" else False
 
-    # on nettoie ce qu'il se trouve dans le fichier results
-    open('results/results.txt', 'w').close()
+    # on nettoie tous les anciens resultats
+    clean_folders("results")
 
     if sys.argv[2] == "-regression":
         model_comparator = ModelComparator(df_clean, is_regression=True,
